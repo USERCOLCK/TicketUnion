@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private CommendFragment mCommendFragment;
     private RedPacketFragment mRedPacketFragment;
     private SearchFragment mSearchFragment;
+    private FragmentManager mFm;
     private Unbinder mBind;
 
     @Override
@@ -49,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         super.onDestroy();
         if (mBind!=null){
             mBind.unbind();
-
         }
     }
 
@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         mCommendFragment = new CommendFragment();
         mRedPacketFragment = new RedPacketFragment();
         mSearchFragment = new SearchFragment();
+        mFm = getSupportFragmentManager();
         switchFragment(mHomeFragment);
     }
 
@@ -84,8 +85,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void switchFragment(BaseFragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        FragmentTransaction fragmentTransaction = mFm.beginTransaction();
         fragmentTransaction.replace(R.id.main_page_container,fragment);
         fragmentTransaction.commit();
     }

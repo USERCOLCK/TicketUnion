@@ -12,4 +12,6 @@
     <color name="colorPrimaryDark">#F5A623</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorGrey">#7B7B7B</color>
+    
+    <color name="ColorTabNormal">#99ffffff</color>
 </resources>

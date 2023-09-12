@@ -1,7 +1,5 @@
 package com.example.ticketunion.presenter.impl;
 
-import android.util.Log;
-
 import com.example.ticketunion.model.Api;
 import com.example.ticketunion.model.domain.Categories;
 import com.example.ticketunion.presenter.IHomePresent;
@@ -21,6 +19,11 @@ public class HomePresenterImpl implements IHomePresent {
 
     @Override
     public void getCategories() {
+
+        if (mCallBack != null){
+            mCallBack.onLoad();
+        }
+
         //加载分类数据
         Retrofit retrofit =RetrofitManager.getInstance().getRetrofit();
         Api api = retrofit.create(Api.class);
@@ -33,13 +36,21 @@ public class HomePresenterImpl implements IHomePresent {
                 if (code == HttpURLConnection.HTTP_OK){
                     //请求成功
                     Categories categories = response.body();
-                    LogUtils.d(HomePresenterImpl.this,"jbc"+categories.toString());
-                    if (mCallBack!=null){
-                         mCallBack.onCategoriesLoaded(categories);
+
+                    if (mCallBack !=null){
+                        if (categories == null || categories.getData().size() == 0){
+                            mCallBack.onEmpty();
+                        }else {
+                            mCallBack.onCategoriesLoaded(categories);
+                        }
                     }
+//                    LogUtils.d(HomePresenterImpl.this,"jbc"+categories.toString());
                 }else {
                     //请求失败
                     LogUtils.i(HomePresenterImpl.this,"请求失败。。。。");
+                    if (mCallBack != null){
+                        mCallBack.onError();
+                    }
                 }
             }
 
@@ -47,6 +58,9 @@ public class HomePresenterImpl implements IHomePresent {
             public void onFailure(Call<Categories> call, Throwable t) {
                 //加载失败的结果 
                 LogUtils.e(HomePresenterImpl.this,"请求错误。。。。。。"+t);
+                if (mCallBack != null){
+                    mCallBack.onError();
+                }
             }
         });
         

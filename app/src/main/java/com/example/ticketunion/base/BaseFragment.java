@@ -16,15 +16,18 @@ import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public abstract class BaseFragment extends Fragment {
-    
+
     private State currentState = State.NONE;
+    //定义五种网络状态
     public enum State{
         NONE,LOADING,SUCCESS,ERROR,EMPTY;
     }
     private Unbinder mBind;
     private FrameLayout mBaseContainer;
-    private  View successView;
-    private View loadingView;
+    private  View mSuccessView;
+    private View mLoadingView;
+    private View mLoadErrorView;
+    private View mLoadEmptyView;
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
@@ -43,32 +46,35 @@ public abstract class BaseFragment extends Fragment {
        * 加载各种状态的View
       * */
     private void loadStatesView(LayoutInflater inflater, ViewGroup container) {
-        successView = loadSuccessView(inflater, container);
-        mBaseContainer.addView(successView);
-
-        loadingView = loadLoadingView(inflater,container);
-        mBaseContainer.addView(loadingView);
-        setUpState(State.LOADING);
+        //加载成功的View
+        mSuccessView = loadSuccessView(inflater, container);
+        mBaseContainer.addView(mSuccessView);
+        //加载loading的View
+        mLoadingView = loadLoadingView(inflater,container);
+        mBaseContainer.addView(mLoadingView);
+        //加载失败的View
+        mLoadErrorView = loadErrorView(inflater,container);
+        mBaseContainer.addView(mLoadErrorView);
+        //加载内容为空的View
+        mLoadEmptyView = loadEmptyView(inflater,container);
+        mBaseContainer.addView(mLoadEmptyView);
+        setUpState(State.NONE);
     }
 
+
+
+      /**
+      *  子类通过调用该方法来切换状态页面
+      * */
     public void setUpState(State state){
         this.currentState = state;
-        if (currentState == State.SUCCESS){
-            successView.setVisibility(View.VISIBLE);
-        }else {
-            successView.setVisibility(View.GONE);
-        }
-
-        if (currentState == State.LOADING){
-            loadingView.setVisibility(View.VISIBLE);
-        }else {
-            loadingView.setVisibility(View.GONE);
-        }
+        mSuccessView.setVisibility(currentState == State.SUCCESS ? View.VISIBLE : View.GONE);
+        mLoadingView.setVisibility(currentState == State.LOADING ? View.VISIBLE : View.GONE);
+        mLoadErrorView.setVisibility(currentState == State.ERROR ? View.VISIBLE : View.GONE);
+        mLoadEmptyView.setVisibility(currentState == State.EMPTY ? View.VISIBLE : View.GONE);
     }
 
-    protected View loadLoadingView(LayoutInflater inflater, ViewGroup container) {
-        return inflater.inflate(R.layout.fragment_loading,container,false);
-    }
+
 
     protected void initView(View rootView){
         
@@ -96,9 +102,30 @@ public abstract class BaseFragment extends Fragment {
         //加载数据
     }
 
+    /**
+     * 加载成功的界面
+     * */
     protected View loadSuccessView(LayoutInflater inflater, ViewGroup container){
         int resId = getRootViewId();
         return inflater.inflate(resId,container,false);
+    }
+    /**
+    * 加载Loading的界面
+    * */
+    protected View loadLoadingView(LayoutInflater inflater, ViewGroup container) {
+        return inflater.inflate(R.layout.fragment_loading,container,false);
+    }
+    /**
+    *  加载失败的界面
+    * */
+    protected View loadErrorView(LayoutInflater inflater, ViewGroup container) {
+        return  inflater.inflate(R.layout.fragment_error,container,false);
+    }
+    /**
+    *  加载内容为空的界面
+    * */
+    protected View loadEmptyView(LayoutInflater inflater, ViewGroup container) {
+        return inflater.inflate(R.layout.fragment_empty,container,false);
     }
 
     protected abstract int getRootViewId();

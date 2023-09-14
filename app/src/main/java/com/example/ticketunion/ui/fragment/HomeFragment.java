@@ -1,7 +1,9 @@
 package com.example.ticketunion.ui.fragment;
 
 
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.viewpager.widget.ViewPager;
 
@@ -36,6 +38,11 @@ public class HomeFragment extends BaseFragment implements IHomeCallBack {
         //给ViewPager设置适配器
         mHomePageAdapter = new HomePagerAdapter(getChildFragmentManager());
         homePager.setAdapter(mHomePageAdapter);
+    }
+
+    @Override
+    protected View loadRootView(LayoutInflater inflater, ViewGroup container) {
+        return inflater.inflate(R.layout.base_home_fragment_layout,container,false);
     }
 
     @Override

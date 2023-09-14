@@ -26,6 +26,7 @@ public class HomeFragment extends BaseFragment implements IHomeCallBack {
     public TabLayout mTabLayout;
     @BindView(R.id.home_pager)
     public ViewPager homePager;
+
     @Override
     protected int getRootViewId() {
         return R.layout.fragment_home;
@@ -42,7 +43,7 @@ public class HomeFragment extends BaseFragment implements IHomeCallBack {
 
     @Override
     protected View loadRootView(LayoutInflater inflater, ViewGroup container) {
-        return inflater.inflate(R.layout.base_home_fragment_layout,container,false);
+        return inflater.inflate(R.layout.base_home_fragment_layout, container, false);
     }
 
     @Override
@@ -55,17 +56,17 @@ public class HomeFragment extends BaseFragment implements IHomeCallBack {
     @Override
     protected void loadData() {
         //加载数据
-        if (mHomePresenter !=null){
+        if (mHomePresenter != null) {
             mHomePresenter.getCategories();
         }
     }
 
     @Override
     public void onCategoriesLoaded(Categories categories) {
-        LogUtils.d(this,"onCategoriesLoaded.......");
+        LogUtils.d(this, "onCategoriesLoaded.......");
         setUpState(State.SUCCESS);
         //加载的数据就会从这里回来
-        if (mHomePageAdapter!=null){
+        if (mHomePageAdapter != null) {
             mHomePageAdapter.setCategories(categories);
         }
     }
@@ -90,6 +91,14 @@ public class HomeFragment extends BaseFragment implements IHomeCallBack {
         //取消回调注册
         if (mHomePresenter != null) {
             mHomePresenter.unregisterCallback(this);
+        }
+    }
+    @Override
+    protected void onRetryClick() {
+        //网络错误，点击了重试
+        //重新加载分类
+        if (mHomePresenter !=null){
+            mHomePresenter.getCategories();
         }
     }
 }
